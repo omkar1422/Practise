@@ -1,130 +1,215 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>log in</title>
 
-</head>
-<body>
-    <!doctype html>
+
+<?php
+
+error_reporting (E_ALL ^ E_NOTICE);
+require_once "config.php";
+
+// $username = $password = $confirm_password  = "";
+// $username_err = $password_err = $confirm_password_err  = "";
+
+$username = $password = $confirm_password = $email = "";
+$username_err = $password_err = $confirm_password_err = $email_err = "";
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST"){
+
+    // Check if username is empty
+    if(empty(trim($_POST["username"]))){
+        $username_err = "Username cannot be blank";
+    }
+    else{
+        $sql = "SELECT id FROM users WHERE username = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        // if($stmt)
+        // {
+        //     mysqli_stmt_bind_param($stmt, "s", $param_username);
+
+        //     // Set the value of param username
+        //     $param_username = trim($_POST['username']);
+
+        //     // Try to execute this statement
+        //     if(mysqli_stmt_execute($stmt))
+        //     {
+        //         mysqli_stmt_store_result($stmt);
+        //         if(mysqli_stmt_num_rows($stmt) == 1)
+        //         {
+        //             $username_err = "This username is already taken"; 
+        //         }
+        //         else{
+        //             $username = trim($_POST['username']);
+        //         }
+        //     }
+        //     else{
+        //         echo "Something went wrong";
+        //     }
+        // }
+    }
+    $username = trim($_POST['username']);
+    // echo "Hello world";
+    // echo $username;
+    // exit(1);
+
+    //mysqli_stmt_close($stmt);
+
+
+    // Check for password
+    if(empty(trim($_POST['password']))){
+    $password_err = "Password cannot be blank";
+    }
+    elseif(strlen(trim($_POST['password'])) < 5){
+        $password_err = "Password cannot be less than 5 characters";
+    }
+    else{
+    $password = trim($_POST['password']);
+    }
+
+    // Check for confirm password field
+    if(trim($_POST['password']) !=  trim($_POST['confirm_password'])){
+    $password_err = "Passwords should match";
+    }
+
+    //check for email
+    if(empty(trim($_POST['email'])))
+    {
+        $email_err = "email cannot be blank";
+    }
+    else
+    {
+        $sql = "SELECT id FROM users WHERE email = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+    }
+    $email = trim($_POST['email']);
+
+
+    // If there were no errors, go ahead and insert into the database
+    if(empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($email_err))
+    {
+        $sql = "INSERT INTO users (username, password,email) VALUES (?,?,?)";
+        echo "connection failed";
+        
+        $stmt = mysqli_prepare($conn, $sql);
+        if ($stmt)
+        {
+            mysqli_stmt_bind_param($stmt, "sss", $param_username, $param_password, $param_email);
+
+            // Set these parameters
+            $param_username = $username;
+            $param_password = password_hash($password, PASSWORD_DEFAULT);
+            $param_email = $email;
+
+            // Try to execute the query
+            if (mysqli_stmt_execute($stmt))
+            {
+                header("location: login.php");
+            }
+            else{
+                 echo "Something went wrong... cannot redirect!";
+            }
+        }
+        //mysqli_stmt_close($stmt);
+    }
+    mysqli_close($conn);
+}
+
+?>
+
+
+
+
+<!doctype html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Log in </title>
+    <title>PHP login system!</title>
   </head>
   <body>
-    
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Financevia Signup System</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+  <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="register.php">Signup</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="login.php">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="logout.php">Logout</a>
+      </li>
 
-    <!-- Optional JavaScript; choose one of the two! -->
+      
+     
+    </ul>
+  </div>
+</nav>
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-
-    -->
-    <div class="mx-2">
-        <button class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#loginModal">Log in</button>
-
-        <button class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#signupModal">Sign up</button>
-
-        
+<div class="container mt-4">
+<h3>Please Register Here:</h3>
+<hr>
+<form action="register.php" method="post">
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputusername4">Username</label>
+      <input type="text" class="form-control" name="username" id="inputusername4" placeholder="username"  required>
     </div>
-
-    <!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-  </button> -->
-  
-  <!--Log in Modal -->
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="loginModalLabel">Log in to Finacevea</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form>
-                <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                </div>
-                <div class="mb-3">
-                  <label for="exampleInputPassword1" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1">
-                </div>
-                <div class="mb-3 form-check">
-                  <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                  <label class="form-check-label" for="exampleCheck1">I agree with terms and services</label>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Password</label>
+      <input type="password" class="form-control" name ="password" id="inputPassword4" placeholder="Password" required>
     </div>
   </div>
-
-
-  <!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-  </button> -->
-  
-  <!--  Sign up Modal -->
-  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="signupModalLabel">Create account</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form>
-                <div class="mb-3">
-
-                    <label for="uexampleInputEmail1" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="uexampleInputEmail1" aria-describedby="emailHelp">
-                  </div>
-                <div class="mb-3">
-
-                  <label for="exampleInputEmail1" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                </div>
-                <div class="mb-3">
-                  <label for="exampleInputPassword1" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1">
-                </div>
-                <div class="mb-3">
-                    <label for="cexampleInputPassword1" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="cexampleInputPassword1">
-                  </div>
-                
-                <button type="submit" class="btn btn-primary">Create account</button>
-              </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
+  <div class="form-group">
+      <label for="inputPassword4">Confirm Password</label>
+      <input type="password" class="form-control" name ="confirm_password" id="inputPassword" placeholder="Confirm Password" required>
+    </div>
+  <div class="form-group">
+    <label for="inputemail">email</label>
+    <input type="text" class="form-control" name ="email" id="inputemail" placeholder="Email">
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">City</label>
+      <input type="text" class="form-control" id="inputCity">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputState">State</label>
+      <select id="inputState" class="form-control">
+        <option selected>Choose...</option>
+        <option>...</option>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="inputZip">Zip</label>
+      <input type="text" class="form-control" id="inputZip">
     </div>
   </div>
+  <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="gridCheck">
+      <label class="form-check-label" for="gridCheck">
+        Check me out
+      </label>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Sign in</button>
+</form>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
-</html>
-    
-</body>
 </html>
