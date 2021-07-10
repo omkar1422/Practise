@@ -475,6 +475,12 @@ a {
   grid-template-rows: 1fr;
 }
 
+.services__wrapper--membership {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
 .services__card {
   margin: 10px;
   height: 425px;
@@ -671,7 +677,7 @@ a {
   }
 }
 
-.currency {
+.images {
   height: 450px;
   width: 500px;
   border-radius: 35px;
