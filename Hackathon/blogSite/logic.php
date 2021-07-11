@@ -4,7 +4,7 @@
     ini_set("display_errors", "off");
 
     // databaseConnection
-    $conn = mysqli_connect("localhost", "root", "", "blogSite1");
+    $conn = mysqli_connect("localhost", "root", "", "login");
     if(!$conn){
         echo "<h3>Not able to establish Database Connection<h3>";
     }

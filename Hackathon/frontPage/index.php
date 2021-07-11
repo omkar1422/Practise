@@ -155,9 +155,9 @@
           </div>
           <div class="footer__link--items">
             <h2>Contact Us</h2>
-            <a href="">Contact</a>
-            <a href="">Suggestions</a>
-            <a href="">Complaints</a>
+            <a href="../contactUs/contactUs.php">Contact</a>
+            <a href="../contactUs/contactUs.php">Suggestions</a>
+            <a href="../contactUs/contactUs.php">Complaints</a>
           </div>
         </div>
         <div class="footer__link--wrapper">
